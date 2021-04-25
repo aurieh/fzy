@@ -50,6 +50,16 @@ int main(int argc, char *argv[]) {
 		if (!isatty(STDIN_FILENO))
 			choices_fread(&choices, stdin, options.input_delimiter);
 
+		if (options.select_only && choices.size <= 1) {
+			if (choices.size < 1) {
+				ret = 1;
+			} else if (choices.size == 1) {
+				printf("%s\n", choices.strings[0]);
+			}
+			tty_close(&tty);
+			goto die;
+		}
+
 		if (options.num_lines > choices.size)
 			options.num_lines = choices.size;
 
@@ -65,6 +75,7 @@ int main(int argc, char *argv[]) {
 		ret = tty_interface_run(&tty_interface);
 	}
 
+die:
 	choices_destroy(&choices);
 
 	return ret;
