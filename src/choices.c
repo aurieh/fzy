@@ -118,6 +118,8 @@ void choices_init(choices_t *c, options_t *options) {
 	c->capacity = c->size = 0;
 	choices_resize(c, INITIAL_CHOICE_CAPACITY);
 
+	c->sort_results = options->sort_results;
+
 	if (options->workers) {
 		c->worker_count = options->workers;
 	} else {
@@ -291,7 +293,7 @@ static void *choices_search_worker(void *data) {
 	}
 
 	/* Sort the partial result */
-	qsort(result->list, result->size, sizeof(struct scored_result), cmpchoice);
+	if (c->sort_results) qsort(result->list, result->size, sizeof(struct scored_result), cmpchoice);
 
 	/* Fan-in, merging results */
 	for(unsigned int step = 0;; step++) {

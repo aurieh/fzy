@@ -32,6 +32,7 @@ typedef struct {
 		size_t size;
 	} selections;
 
+	int sort_results;
 	unsigned int worker_count;
 } choices_t;
 

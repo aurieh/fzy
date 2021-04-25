@@ -17,6 +17,7 @@ static const char *usage_str =
     " -e, --show-matches=QUERY Output the sorted matches of QUERY\n"
     " -t, --tty=TTY            Specify file to use as TTY device (default /dev/tty)\n"
     " -s, --show-scores        Show the scores of each match\n"
+    " -n, --no-sort            Do not sort the results by score\n"
     " -o, --select-only        Automatically select the only item\n"
     " -0, --read-null          Read input delimited by ASCII NUL characters\n"
     " -j, --workers NUM        Use NUM workers for searching. (default is # of CPUs)\n"
@@ -34,6 +35,7 @@ static struct option longopts[] = {{"show-matches", required_argument, NULL, 'e'
 				   {"tty", required_argument, NULL, 't'},
 				   {"prompt", required_argument, NULL, 'p'},
 				   {"show-scores", no_argument, NULL, 's'},
+				   {"no-sort", no_argument, NULL, 'n'},
 				   {"select-only", no_argument, NULL, 'o'},
 				   {"read-null", no_argument, NULL, '0'},
 				   {"version", no_argument, NULL, 'v'},
@@ -49,6 +51,7 @@ void options_init(options_t *options) {
 	options->filter          = NULL;
 	options->init_search     = NULL;
 	options->show_scores     = 0;
+	options->sort_results    = 1;
 	options->select_only     = 0;
 	options->scrolloff       = 1;
 	options->tty_filename    = DEFAULT_TTY;
@@ -63,13 +66,16 @@ void options_parse(options_t *options, int argc, char *argv[]) {
 	options_init(options);
 
 	int c;
-	while ((c = getopt_long(argc, argv, "vhso0e:q:l:t:p:j:i", longopts, NULL)) != -1) {
+	while ((c = getopt_long(argc, argv, "vhnso0e:q:l:t:p:j:i", longopts, NULL)) != -1) {
 		switch (c) {
 			case 'v':
 				printf("%s " VERSION " © 2014-2018 John Hawthorn\n", argv[0]);
 				exit(EXIT_SUCCESS);
 			case 's':
 				options->show_scores = 1;
+				break;
+			case 'n':
+				options->sort_results = 0;
 				break;
 			case 'o':
 				options->select_only = 1;

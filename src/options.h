@@ -7,6 +7,7 @@ typedef struct {
 	const char *init_search;
 	const char *tty_filename;
 	int show_scores;
+	int sort_results;
 	int select_only;
 	unsigned int num_lines;
 	unsigned int scrolloff;
